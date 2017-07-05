@@ -1,0 +1,86 @@
+{% extends 'partials/base.html.twig' %}
+
+
+{% block titlebar %}
+	
+	{% if not admin.route %}
+        <div class="button-bar">
+            <a class="button" href="{{ base_url }}/"><i class="fa fa-reply"></i> {{ "PLUGIN_ADMIN.BACK"|tu }}</a>
+			
+			<button type="button" class="button disabled" href="#modal" data-remodal-target="modal">
+                <i class="fa fa-plus"></i> {{ "PLUGIN_USERS.ADD_GROUP"|tu }}
+            </button>
+        </div>
+        <h1><i class="fa fa-fw fa-user-o"></i> {{ "PLUGIN_USERS.GROUPS"|tu }}</h1>
+    {% else %}
+		{% set group = users.getGroup(admin.route) %}
+        {% if (group) %}
+        <div class="button-bar">
+            <a class="button" href="{{ base_url_relative }}/groups"><i class="fa fa-arrow-left"></i> {{ "PLUGIN_USERS.BACK_TO_GROUPS"|tu }}</a>
+			<button class="button" type="submit" name="task" value="save" form="blueprints"><i class="fa fa-check"></i> {{ "PLUGIN_ADMIN.SAVE"|tu }}</button>
+        </div>
+        {% else %}
+        <div class="button-bar">
+            <a class="button" href="{{ base_url_relative }}/groups"><i class="fa fa-arrow-left"></i> {{ "PLUGIN_USERS.BACK_TO_GROUPS"|tu }}</a>
+        </div>
+        {% endif %}
+        <h1><i class="fa fa-fw fa-user-o"></i> {{ "PLUGIN_USERS.GROUP"|tu }}: {{ admin.route|e }}</h1>
+    {% endif %}
+	
+{% endblock %}
+
+
+{% block content %}
+    {{ dump(admin.data('users/admin').groups) }}
+	{% if admin.route %}
+        {{ dump(users.getGroup(admin.route)) }}
+		{% set group = users.getGroup(admin.route) %}
+		{% set title = "PLUGIN_ADMIN.GROUP"|tu ~ ": " ~ admin.route|e %}
+
+		{% if authorize(['admin.users', 'admin.super']) %}
+            <div>
+                {% if not admin.route %}
+                    {% include 'partials/users-list.html.twig' %}
+
+                    <div class="remodal" data-remodal-id="modal" data-remodal-options="hashTracking: false">
+                        {% include 'partials/blueprints-new.html.twig' with { blueprints: admin.blueprints('user/group_new') } %}
+                    </div>
+                {% else %}
+                    {% include 'partials/blueprints.html.twig' with { data: group, blueprints: group.blueprints } %}
+                {% endif %}
+            </div>
+
+            <div class="remodal" data-remodal-id="changes">
+                <form>
+                    <h1>{{ "PLUGIN_ADMIN.MODAL_CHANGED_DETECTED_TITLE"|tu }}</h1>
+                    <p class="bigger">
+                        {{ "PLUGIN_ADMIN.MODAL_CHANGED_DETECTED_DESC"|tu }}
+                    </p>
+                    <br>
+                    <div class="button-bar">
+                        <a class="button secondary" data-leave-action="cancel" href="#"><i class="fa fa-fw fa-close"></i> {{ "PLUGIN_ADMIN.CANCEL"|tu }}</a>
+                        <a class="button" data-leave-action="continue" href="#"><i class="fa fa-fw fa-check"></i> {{ "PLUGIN_ADMIN.CONTINUE"|tu }}</a>
+                    </div>
+                </form>
+            </div>
+		{% endif %}
+
+	{% else %}
+		{% set title = "PLUGIN_USERS.GROUPS"|tu %}
+
+		<div class="remodal" data-remodal-id="modal">
+			{% include 'partials/blueprints-new.html.twig' with { blueprints: admin.blueprints('user/group_new') } %}
+		</div>
+		<div class="users_container">
+			{% include 'partials/users-list.html.twig' %}	
+			{#{{redirect_me(base_url_relative ~ '/404')}}#}
+		</div>
+	{% endif %}
+
+		
+{% endblock %}
+
+
+
+
+

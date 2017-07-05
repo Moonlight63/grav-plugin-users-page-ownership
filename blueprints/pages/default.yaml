@@ -1,0 +1,90 @@
+@extends:
+    type: default
+    context: blueprints://pages
+    
+form:
+    fields:
+        tabs:
+            fields:                 
+                advanced:
+                    fields:
+                        admin_only:
+                            fields:
+                                header.creator:
+                                    type: text
+                                    style: vertical
+                                    label: Created By
+                                    readonly: true
+                                    
+                                header.visibleToGroups:
+                                    type: selectize
+                                    size: large
+                                    toggleable: true
+                                    label: Force Visible to Groups
+                                    data-options@: '\Grav\User\Groups::groups'
+                                    classes: fancy
+                                    help: PLUGIN_ADMIN.GROUPS_HELP
+                                    validate:
+                                        type: commalist
+                                        
+                                header.editableToGroups:
+                                    type: selectize
+                                    size: large
+                                    toggleable: true
+                                    label: Force Editable to Groups
+                                    data-options@: '\Grav\User\Groups::groups'
+                                    classes: fancy
+                                    help: PLUGIN_ADMIN.GROUPS_HELP
+                                    validate:
+                                        type: commalist
+
+                        overrides:
+                            fields:
+                                header.markdown.extra:
+                                    ordering@: header.process
+                                    toggleable: true
+                                    type: toggle
+                                    label: Markdown extra
+                                    help: PLUGIN_ADMIN.MARKDOWN_EXTRA_HELP
+                                    highlight: 0
+                                    options:
+                                        1: PLUGIN_ADMIN.YES
+                                        0: PLUGIN_ADMIN.NO
+                                    validate:
+                                        type: bool
+                                header.markdown.auto_line_breaks:
+                                    ordering@: header.markdown.extra
+                                    toggleable: true
+                                    type: toggle
+                                    label: PLUGIN_ADMIN.AUTO_LINE_BREAKS
+                                    help: PLUGIN_ADMIN.AUTO_LINE_BREAKS_HELP
+                                    highlight: 0
+                                    options:
+                                        1: PLUGIN_ADMIN.YES
+                                        0: PLUGIN_ADMIN.NO
+                                    validate:
+                                        type: bool
+                                header.markdown.auto_url_links:
+                                    ordering@: header.markdown.auto_line_breaks
+                                    toggleable: true
+                                    type: toggle
+                                    label: PLUGIN_ADMIN.AUTO_URL_LINKS
+                                    help: PLUGIN_ADMIN.AUTO_URL_LINKS_HELP
+                                    highlight: 0
+                                    options:
+                                        1: PLUGIN_ADMIN.YES
+                                        0: PLUGIN_ADMIN.NO
+                                    validate:
+                                        type: bool
+                                header.markdown.escape_markup:
+                                    ordering@: header.markdown.auto_url_links
+                                    toggleable: true
+                                    type: toggle
+                                    label: PLUGIN_ADMIN.ESCAPE_MARKUP
+                                    help: PLUGIN_ADMIN.ESCAPE_MARKUP_HELP
+                                    highlight: 0
+                                    options:
+                                        1: PLUGIN_ADMIN.YES
+                                        0: PLUGIN_ADMIN.NO
+                                    validate:
+                                        type: bool

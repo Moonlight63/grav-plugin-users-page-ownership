@@ -1,0 +1,93 @@
+{% embed 'partials/base.html.twig' %}
+
+    {% set user = users.getUser(query) %}
+    {% set collection = page.collection() %}
+
+	{#{% set base_url = page.parent.url %}
+    {% set feed_url = base_url %}
+
+    {% if base_url == '/' %}
+        {% set base_url = '' %}
+    {% endif %}
+
+    {% if base_url == base_url_relative %}
+        {% set feed_url = base_url~'/'~page.parent.slug %}
+    {% endif  %}#}
+
+	{% block content %}
+    
+        <div class="sectiontitle">
+            <h2>{{ user.fullname }}</h2>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-xs-offset-0 col-sm-4 col-sm-offset-0 col-md-3 col-md-offset-2">
+                   <div class="user_avatar">
+                        {% if user.avatar %}
+                            {% set avatar = base_url_simple ~ '/' ~ (user.avatar|first).path %}
+                        {% else %}
+                            {% set avatar = 'https://www.gravatar.com/avatar/' ~ user.email|md5 ~ '?s=200' %}
+                        {% endif %}
+                        <img src="{{avatar}}" />
+                    </div>
+                </div>
+                <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-0 col-md-5">
+                    <p>{{ user.about }}</p>
+				</div>
+            </div>
+        </div>
+        
+        <hr>
+    
+        <div class="container" style="/*margin-top: 200px;*/">
+
+            <div class="row">
+                <div class="col-sm-8 blog-main">
+                    {% for child in collection %}
+                        {% include 'partials/blog_item.html.twig' with {'page':child, 'truncate':true} %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+        
+        <script>
+            //$(window).load(function(){
+                $('span.fr-video').each(function(){
+                    var $this = $(this);
+                    var parentWidth = $this.parent().css('width');
+                    var width = $this.find('iframe').css('width');
+                    var height = $this.find('iframe').css('height');
+
+                    var percent = ((parseFloat(width) / parseFloat(parentWidth)) * 100) + '%';
+
+                    console.log(width);
+                    console.log(height);
+
+                    $this.css({'position': 'relative', 'display': 'block', 'width': '100%', 'height': 0, 'padding-bottom': '56.25%', 'overflow': 'hidden'});
+
+                    $this.find('iframe').css({'position': 'absolute', 'top': 0, 'left': 0, 'width': '100%', 'height': '100%', 'border': 0});
+                    
+                    //$this.wrap('<span style="max-width: 100%; width: ' + percent + '; display: block"></span>');
+                    $this.wrap('<span style="max-width: 100%; width: 100%; display: block"></span>');
+
+                });
+            //});
+                
+        </script>
+	{% endblock %}
+	
+	{% block pagination %}
+        {% if config.plugins.pagination.enabled and collection.params.pagination %}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 text-center">
+                    {% include 'partials/pagination.html.twig' with {'base_url':page.url, 'pagination':collection.params.pagination} %}
+                </div>
+            </div>
+        </div>
+	    {% endif %}
+	{% endblock %}
+
+{% endembed %}

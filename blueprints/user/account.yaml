@@ -1,0 +1,13 @@
+@extends:
+    type: account
+    context: blueprints://user
+    
+form:
+  fields:
+    about:
+        ordering@: avatar
+        size: large
+        type: textarea
+        label: About Me
+        validate:
+          type: textarea

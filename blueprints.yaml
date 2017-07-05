@@ -1,0 +1,11 @@
+name: Users
+version: 0.8.7
+description: Adds user managment functionality to your admin interface
+icon: user
+author:
+  name: Dalen Catt
+  email: dalen@cascadeap.com
+  url: http://cascadeap.com
+
+dependencies:
+  - admin
