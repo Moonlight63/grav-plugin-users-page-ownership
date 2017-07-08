@@ -50,33 +50,39 @@
     
     {% for p in page.children() %}
     
-        {% set showParent = true %}
+        {% set showPage = true %}
         
         {% if p.header.creator is not empty %}
             {% if authorize('users.limitPagesToOwner') and p.header.creator != grav.user.username %}
-                {% set showParent = false %}
+                {% set showPage = false %}
             {% endif %}
         {% else %}
             {% if not authorize('users.showPagesWithNoOwner') and p.header.creator is empty %}
-                {% set showParent = false %}
+                {% set showPage = false %}
             {% endif %}
         {% endif %}
         
-        {% if authorize('admin.super') %}
-            {% set showParent = true %}
-        {% endif %}
+        {% for g in p.header.visibleToGroups %}
+            {% if g in grav.user.groups %}
+                {% set showPage = true %}
+            {% endif %}
+        {% endfor %}
         
-        {% if not showParent and p.children().count > 0 %}
+        {% for g in p.header.editableToGroups %}
+            {% if g in grav.user.groups %}
+                {% set showPage = true %}
+            {% endif %}
+        {% endfor %}
         
+        {% if not showPage and p.children().count > 0 %}
             {% if _self.checkChildren(p)|trim %}
-                {% set showParent = true %}
+                {% set showPage = true %}
             {% else %}
-                {% set showParent = false %}
+                {% set showPage = false %}
             {% endif %}
-        
         {% endif %}
         
-        {% if showParent %}
+        {% if showPage %}
             {% set flag = true %}
         {% endif %}
         
@@ -116,34 +122,33 @@
         {% set showPage = true %}
         {% set editPage = true %}
         
-        {% if p.header.creator is not empty %}
-            {% if authorize('users.limitPagesToOwner') and p.header.creator != grav.user.username %}
-                {% set showPage = false %}
-                {% set editPage = false %}
-            {% endif %}
-        {% else %}
-            {% if not authorize('users.showPagesWithNoOwner') and p.header.creator is empty %}
-                {% set showPage = false %}
-                {% set editPage = false %}
-            {% endif %}
-        {% endif %}
+        {% if not authorize('admin.super') %}
         
-        {% for g in p.header.visibleToGroups %}
-            {% if g in grav.user.groups %}
-                {% set showPage = true %}
+            {% if p.header.creator is not empty %}
+                {% if authorize('users.limitPagesToOwner') and p.header.creator != grav.user.username %}
+                    {% set showPage = false %}
+                    {% set editPage = false %}
+                {% endif %}
+            {% else %}
+                {% if not authorize('users.showPagesWithNoOwner') and p.header.creator is empty %}
+                    {% set showPage = false %}
+                    {% set editPage = false %}
+                {% endif %}
             {% endif %}
-        {% endfor %}
+
+            {% for g in p.header.visibleToGroups %}
+                {% if g in grav.user.groups %}
+                    {% set showPage = true %}
+                {% endif %}
+            {% endfor %}
+
+            {% for g in p.header.editableToGroups %}
+                {% if g in grav.user.groups %}
+                    {% set editPage = true %}
+                    {% set showPage = true %}
+                {% endif %}
+            {% endfor %}
         
-        {% for g in p.header.editableToGroups %}
-            {% if g in grav.user.groups %}
-                {% set editPage = true %}
-                {% set showPage = true %}
-            {% endif %}
-        {% endfor %}
-        
-        {% if authorize('admin.super') %}
-            {% set showPage = true %}
-            {% set editPage = true %}
         {% endif %}
         
         {{dump(p.title)}}
@@ -156,7 +161,7 @@
             <li class="page-item" data-nav-id="{{ p.route }}">
                 <div class="row">
                     <span {{ p.children(0).count > 0 ? 'data-toggle="children"' : ''}}>
-                    <i class="page-icon fa fa-fw fa-circle-o {{ p.children(0).count > 0 and _self.checkChildren(p)|trim ? 'children-closed' : ''}} {{ p.modular ? 'modular' : (not p.routable ? 'not-routable' : (not p.visible ? 'not-visible' : (not p.page ? 'folder' :  ''))) }}"></i>
+                    <i class="page-icon fa fa-fw fa-circle-o {{ p.children(0).count > 0 and (authorize('admin.super') ? true : _self.checkChildren(p)|trim) ? 'children-closed' : ''}} {{ p.modular ? 'modular' : (not p.routable ? 'not-routable' : (not p.visible ? 'not-visible' : (not p.page ? 'folder' :  ''))) }}"></i>
                     </span>
                     <span data-hint="{{ description|trim(' &bull; ')|raw }}" class="hint--right">
                     {% if editPage %}
