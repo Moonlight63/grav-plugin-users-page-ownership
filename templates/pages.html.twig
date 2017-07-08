@@ -44,6 +44,52 @@
 {% set preview_html = (base_url_relative_frontend|rtrim('/') ~ (context.home ? '' : context.route)) ?: '/' %}
 {% set preview_link = context.routable ? '<a class="button" target="_blank" href="' ~ preview_html ~ '"> <i class="fa fa-fw fa-eye" style="font-size:18px;margin-right:0;"></i></a>' : '' %}
 
+{% macro checkChildren(page) %}
+
+    {% set flag = false %}
+    
+    {% for p in page.children() %}
+    
+        {% set showParent = true %}
+        
+        {% if p.header.creator is not empty %}
+            {% if authorize('users.limitPagesToOwner') and p.header.creator != grav.user.username %}
+                {% set showParent = false %}
+            {% endif %}
+        {% else %}
+            {% if not authorize('users.showPagesWithNoOwner') and p.header.creator is empty %}
+                {% set showParent = false %}
+            {% endif %}
+        {% endif %}
+        
+        {% if authorize('admin.super') %}
+            {% set showParent = true %}
+        {% endif %}
+        
+        {% if not showParent and p.children().count > 0 %}
+        
+            {% if _self.checkChildren(p)|trim %}
+                {% set showParent = true %}
+            {% else %}
+                {% set showParent = false %}
+            {% endif %}
+        
+        {% endif %}
+        
+        {% if showParent %}
+            {% set flag = true %}
+        {% endif %}
+        
+    {% endfor %}
+    
+    {% if flag %}
+        {{ true }}
+    {% else %}
+        {{ null }}
+    {% endif %}
+
+{% endmacro %}
+
 {% macro loop(page, depth, twig_vars) %}
     {% set separator = twig_vars['config'].system.param_sep %}
     {% set base_url = twig_vars['base_url_relative'] %}
