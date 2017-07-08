@@ -19,7 +19,7 @@ use RocketTheme\Toolbox\File\File;
 use RocketTheme\Toolbox\Event\Event;
 use Symfony\Component\Yaml\Yaml;
 
-class UsersPlugin extends Plugin
+class AdvancedAdminUsersManagmentPlugin extends Plugin
 {
     protected $route = 'users';
     //protected $groute = 'groups';
@@ -275,8 +275,8 @@ class UsersPlugin extends Plugin
         }
         
         if($this->isAdmin()){
-            $this->grav['assets']->addCss('plugin://users/css/users.css');
-            $this->grav['assets']->addJs('plugin://users/js/dropzone.js', -1);
+            $this->grav['assets']->addCss('plugin://advanced-admin-users-managment/css/users.css');
+            $this->grav['assets']->addJs('plugin://advanced-admin-users-managment/js/dropzone.js', -1);
         }
             
     }
@@ -397,7 +397,7 @@ class TwigUsers{
         // force lowercase of username
         $username = strtolower($username);
 		
-        $blueprints = new Blueprints($locator->findResource('plugin://users/blueprints/user'));
+        $blueprints = new Blueprints($locator->findResource('plugin://advanced-admin-users-managment/blueprints/user'));
         $blueprint = $blueprints->get('account');
         $file_path = $locator->findResource('account://' . $username . YAML_EXT);
         $file = CompiledYamlFile::instance($file_path);

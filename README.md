@@ -1,6 +1,6 @@
 # Grav Users Admin Managment Plugin
 
-ok, so I saw that someone released a "users plugin" not too long ago. Im uploading this one anyway because I had been working on iy for a while. I could have uploaded it months ago, but I took a hiatus on programming, so I didn't bother to upload knowing that I wouldn't be back to it for a while. If someone ever wanted to take over this one, go for it.
+ok, so I saw that someone released a "users plugin" not too long ago. Im uploading this one anyway because I had been working on it for a while. I could have uploaded it months ago, but I took a hiatus on programming, so I didn't bother to upload knowing that I wouldn't be back to it for a while. If someone ever wanted to take over this one, go for it.
 
 ## Basic rundown:
 
