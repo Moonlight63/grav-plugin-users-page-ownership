@@ -252,7 +252,7 @@ class UsersPageOwnershipPlugin extends Plugin
     {
         
         $twig = $this->grav['twig'];
-		$twig->twig_vars['users'] = new TwigUsersOwnership();
+		$twig->twig_vars['ownerUtils'] = new TwigUsersOwnership();
         
         if ($this->query) {
             $twig->twig_vars['query'] = implode(', ', $this->query);

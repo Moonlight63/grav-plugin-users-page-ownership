@@ -1,3 +1,8 @@
+# v0.9.1
+## 08/01/17
+1. [](#bug-fix)
+    * Changed name of the twig var to avoid a conflict with another plugin.
+    
 # v0.9.0
 ## 08/01/17
 1. [](#new)

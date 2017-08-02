@@ -11,22 +11,22 @@ All pages now have a 'creator' frontmatter that can be used in a twig template l
 {{ page.header.creator }}
 ~~~~
 
-However, this only returns the username of the creator. Fear not! You can use the username to retrive the grave user object of that user with the "users" twig variable:
+However, this only returns the username of the creator. Fear not! You can use the username to retrive the grave user object of that user with the "ownerUtils" twig variable:
 
 ~~~~
-{{ users.getUser(page.header.creator) }}
+{{ ownerUtils.getUser(page.header.creator) }}
 ~~~~
 
 Other information about this user can be fetched like so:
 
 ~~~~
-{{ users.getUser(page.header.creator).fullname }}
-{{ users.getUser(page.header.creator).username }}
-{{ users.getUser(page.header.creator).email }}
-{{ users.getUser(page.header.creator).title }}
-{{ users.getUser(page.header.creator).about }}
-{{ users.getUser(page.header.creator).avatar }}
-{{ users.getUser(page.header.creator).language }}
+{{ ownerUtils.getUser(page.header.creator).fullname }}
+{{ ownerUtils.getUser(page.header.creator).username }}
+{{ ownerUtils.getUser(page.header.creator).email }}
+{{ ownerUtils.getUser(page.header.creator).title }}
+{{ ownerUtils.getUser(page.header.creator).about }}
+{{ ownerUtils.getUser(page.header.creator).avatar }}
+{{ ownerUtils.getUser(page.header.creator).language }}
 ~~~~
 
 This information can be used in any twig template. I have included an "Authors Bio" page with the plugin (named 'userpage.html.twig') but you should probably override it for your needs, as I used bootstrap and matched it to my pre-existing website. Accessing this page is easy enough, it works exactly like the 'simple search' plugin, but without the searchbar. Just travel to YOURBLOG.com/authors/query:YOURUSERNAME.
@@ -35,7 +35,7 @@ I may add the ability to change this link in the future if it is requested enoug
 You can create links back to this page from eg: a blog post, like so:
 
 ~~~~
-<strong>Posted By: </strong><a href="{{ home_url }}/authors/query{{ config.system.param_sep }}{{ users.getUser(page.header.creator).username }}">{{ users.getUser(page.header.creator).fullname }}</a>
+<strong>Posted By: </strong><a href="{{ home_url }}/authors/query{{ config.system.param_sep }}{{ ownerUtils.getUser(page.header.creator).username }}">{{ ownerUtils.getUser(page.header.creator).fullname }}</a>
 ~~~~
 
 Users can be restricted to only see pages that they have created. Pages can be set to be gloably viewable and/or editable by a group. Users can only create subpages to pages they can view or edit. Allowing Users to create pages at -ROOT- is optional. Users can be banned from deleting pages.

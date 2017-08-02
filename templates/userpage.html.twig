@@ -1,6 +1,6 @@
 {% embed 'partials/base.html.twig' %}
 
-    {% set user = users.getUser(query) %}
+    {% set user = ownerUtils.getUser(query) %}
     {% set collection = page.collection() %}
 
 	{#{% set base_url = page.parent.url %}
