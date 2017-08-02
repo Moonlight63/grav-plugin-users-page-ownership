@@ -1,3 +1,8 @@
+# v0.9.0
+## 08/01/17
+1. [](#new)
+    * Changed the whole plugin structure and name.
+
 # v0.8.8
 ## 07/07/17
 1. [](#improved)

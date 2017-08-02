@@ -8,6 +8,15 @@ form:
             fields:                 
                 advanced:
                     fields:
+                        columns:
+                            fields:
+                                column1:
+                                    fields:
+                                        route:
+                                            type: filteredparent
+                                            label: PLUGIN_ADMIN.PARENT
+                                            classes: fancy
+                      
                         admin_only:
                             fields:
                                 header.creator:
@@ -37,54 +46,3 @@ form:
                                     help: PLUGIN_ADMIN.GROUPS_HELP
                                     validate:
                                         type: commalist
-
-                        overrides:
-                            fields:
-                                header.markdown.extra:
-                                    ordering@: header.process
-                                    toggleable: true
-                                    type: toggle
-                                    label: Markdown extra
-                                    help: PLUGIN_ADMIN.MARKDOWN_EXTRA_HELP
-                                    highlight: 0
-                                    options:
-                                        1: PLUGIN_ADMIN.YES
-                                        0: PLUGIN_ADMIN.NO
-                                    validate:
-                                        type: bool
-                                header.markdown.auto_line_breaks:
-                                    ordering@: header.markdown.extra
-                                    toggleable: true
-                                    type: toggle
-                                    label: PLUGIN_ADMIN.AUTO_LINE_BREAKS
-                                    help: PLUGIN_ADMIN.AUTO_LINE_BREAKS_HELP
-                                    highlight: 0
-                                    options:
-                                        1: PLUGIN_ADMIN.YES
-                                        0: PLUGIN_ADMIN.NO
-                                    validate:
-                                        type: bool
-                                header.markdown.auto_url_links:
-                                    ordering@: header.markdown.auto_line_breaks
-                                    toggleable: true
-                                    type: toggle
-                                    label: PLUGIN_ADMIN.AUTO_URL_LINKS
-                                    help: PLUGIN_ADMIN.AUTO_URL_LINKS_HELP
-                                    highlight: 0
-                                    options:
-                                        1: PLUGIN_ADMIN.YES
-                                        0: PLUGIN_ADMIN.NO
-                                    validate:
-                                        type: bool
-                                header.markdown.escape_markup:
-                                    ordering@: header.markdown.auto_url_links
-                                    toggleable: true
-                                    type: toggle
-                                    label: PLUGIN_ADMIN.ESCAPE_MARKUP
-                                    help: PLUGIN_ADMIN.ESCAPE_MARKUP_HELP
-                                    highlight: 0
-                                    options:
-                                        1: PLUGIN_ADMIN.YES
-                                        0: PLUGIN_ADMIN.NO
-                                    validate:
-                                        type: bool

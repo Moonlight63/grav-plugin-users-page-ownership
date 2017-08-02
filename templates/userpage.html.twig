@@ -29,7 +29,7 @@
                         {% else %}
                             {% set avatar = 'https://www.gravatar.com/avatar/' ~ user.email|md5 ~ '?s=200' %}
                         {% endif %}
-                        <img src="{{avatar}}" />
+                        <img src="{{ avatar }}" />
                     </div>
                 </div>
                 <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-0 col-md-5">
@@ -51,31 +51,6 @@
             </div>
             
         </div>
-        
-        <script>
-            //$(window).load(function(){
-                $('span.fr-video').each(function(){
-                    var $this = $(this);
-                    var parentWidth = $this.parent().css('width');
-                    var width = $this.find('iframe').css('width');
-                    var height = $this.find('iframe').css('height');
-
-                    var percent = ((parseFloat(width) / parseFloat(parentWidth)) * 100) + '%';
-
-                    console.log(width);
-                    console.log(height);
-
-                    $this.css({'position': 'relative', 'display': 'block', 'width': '100%', 'height': 0, 'padding-bottom': '56.25%', 'overflow': 'hidden'});
-
-                    $this.find('iframe').css({'position': 'absolute', 'top': 0, 'left': 0, 'width': '100%', 'height': '100%', 'border': 0});
-                    
-                    //$this.wrap('<span style="max-width: 100%; width: ' + percent + '; display: block"></span>');
-                    $this.wrap('<span style="max-width: 100%; width: 100%; display: block"></span>');
-
-                });
-            //});
-                
-        </script>
 	{% endblock %}
 	
 	{% block pagination %}

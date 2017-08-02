@@ -1,6 +1,6 @@
-name: Advanced Admin Users Managment
-version: 0.8.7
-description: Adds user managment functionality to your admin interface
+name: Users Page Ownership
+version: 0.9.0
+description: Adds user ownership functionality to your pages
 icon: user
 author:
   name: Dalen Catt

@@ -4,14 +4,11 @@
 
 form:
   fields:
-
+  
     route:
-      replace@: true
-      type: select
+      type: filteredparent
       label: PLUGIN_ADMIN.PARENT_PAGE
       classes: fancy
-      data-options@: '\Grav\Plugin\TwigUsers::parentsRawRoutes'
-      data-default@: '\Grav\Plugin\Admin\Admin::getLastPageRoute'
       validate:
         required: true
 

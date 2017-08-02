@@ -19,10 +19,8 @@ use RocketTheme\Toolbox\File\File;
 use RocketTheme\Toolbox\Event\Event;
 use Symfony\Component\Yaml\Yaml;
 
-class AdvancedAdminUsersManagmentPlugin extends Plugin
+class UsersPageOwnershipPlugin extends Plugin
 {
-    protected $route = 'users';
-    //protected $groute = 'groups';
     protected $enable = false;
     protected $query;
     
@@ -57,10 +55,6 @@ class AdvancedAdminUsersManagmentPlugin extends Plugin
     {
 		
 		$uri = $this->grav['uri'];
-
-        if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false/* && strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->groute) === false*/) {
-            //return;
-        }
         
         // Store this version and prefer newer method
         if (method_exists($this, 'getBlueprint')) {
@@ -84,8 +78,6 @@ class AdvancedAdminUsersManagmentPlugin extends Plugin
      */
     public function onAdminMenu()
     {
-        $this->grav['twig']->plugins_hooked_nav['PLUGIN_USERS.USERS'] = ['route' => $this->route, 'icon' => 'fa-user'];
-        //$this->grav['twig']->plugins_hooked_nav['PLUGIN_USERS.GROUPS'] = ['route' => $this->groute, 'icon' => 'fa-user'];
 		$this->onAdminRegisterPermissions();
     }
 	
@@ -115,13 +107,6 @@ class AdvancedAdminUsersManagmentPlugin extends Plugin
 		
     }
 	
-	/**
-     * Exclude users from the Data Manager plugin
-     */
-    public function onDataTypeExcludeFromDataManagerPluginHook()
-    {
-        //$this->grav['admin']->dataTypesExcludedFromDataManagerPlugin[] = 'users';
-    }
 	
 	/**
      * Add Special plugin permissions
@@ -267,16 +252,10 @@ class AdvancedAdminUsersManagmentPlugin extends Plugin
     {
         
         $twig = $this->grav['twig'];
-		$twig->twig_vars['users'] = new TwigUsers();
+		$twig->twig_vars['users'] = new TwigUsersOwnership();
         
         if ($this->query) {
             $twig->twig_vars['query'] = implode(', ', $this->query);
-            
-        }
-        
-        if($this->isAdmin()){
-            $this->grav['assets']->addCss('plugin://advanced-admin-users-managment/css/users.css');
-            $this->grav['assets']->addJs('plugin://advanced-admin-users-managment/js/dropzone.js', -1);
         }
             
     }
@@ -296,17 +275,16 @@ class AdvancedAdminUsersManagmentPlugin extends Plugin
 
 
 
-class TwigUsers{
+class TwigUsersOwnership{
     
     /**
      * Get available parents raw routes.
      *
      * @return array
      */
-    public static function parentsRawRoutes()
+    public static function parentsRawRoutes($start_page = null, $show_all = true, $show_fullpath = false, $show_slug = false, $show_modular = false, $limit_levels = false)
     {
-        $rawRoutes = true;
-        return self::getParents($rawRoutes);
+        return self::getParents($start_page, $show_all, $show_fullpath, $show_slug, $show_modular, $limit_levels);
     }
     
     /**
@@ -316,11 +294,13 @@ class TwigUsers{
      *
      * @return array
      */
-    private static function getParents($rawRoutes)
+    
+    private static function getParents($start_page = null, $show_all = true, $show_fullpath = false, $show_slug = false, $show_modular = false, $limit_levels = false)
     {
         $grav = Grav::instance();
         $pages = $grav['pages'];
-        $parents = $pages->getList(null, 0, $rawRoutes);
+        $parents = $pages->getList($start_page, 0, true, $show_all, $show_fullpath, $show_slug, $show_modular, $limit_levels);
+        //$parents = $pages->getList(null, 0, true);
         
         foreach ( $parents as $key=>$pageRoute ) {
             $page = $pages->find($key);
@@ -329,9 +309,9 @@ class TwigUsers{
             }
         }
         
-        if ($grav['user']->authorize('users.canPostToRoot') || $grav['user']->authorize('admin.super')) {
+        /*if ($grav['user']->authorize('users.canPostToRoot') || $grav['user']->authorize('admin.super')) {
             $parents = array('/' => 'PLUGIN_ADMIN.DEFAULT_OPTION_ROOT') + $parents;
-        }
+        }*/
         
         return $parents;
     }
@@ -397,7 +377,7 @@ class TwigUsers{
         // force lowercase of username
         $username = strtolower($username);
 		
-        $blueprints = new Blueprints($locator->findResource('plugin://advanced-admin-users-managment/blueprints/user'));
+        $blueprints = new Blueprints($locator->findResource('plugin://users-page-ownership/blueprints/user'));
         $blueprint = $blueprints->get('account');
         $file_path = $locator->findResource('account://' . $username . YAML_EXT);
         $file = CompiledYamlFile::instance($file_path);

@@ -1,0 +1,45 @@
+{% extends "forms/fields/pages/pages.html.twig" %}
+{% import "forms/fields/pages/pages.html.twig" as parent %}
+
+{% block input %}
+
+    {% set last_page_route = admin.page.getLastPageRoute %}
+    {% set show_slug_val = true %}
+    {% set show_fullpath_val = false %}
+
+    {% set show_parents = config.get('plugins.admin.pages.show_parents') %}
+    {% if show_parents == 'folder' %}
+        {% set show_slug_val = false %}
+    {% elseif show_parents == 'fullpath' %}
+        {% set show_fullpath_val = true %}
+    {% endif %}
+
+    {% set defaults = {show_root:true, show_all:true, show_slug:show_slug_val, show_fullpath:show_fullpath_val, default:last_page_route} %}
+    {% set field = field|merge(defaults) %}
+
+
+    {% set start_page = field.start_route ? pages.find(field.start_route) : null %}
+    {% set show_all = field.show_all is same as(false) ? false : true %}
+    {% set show_fullpath = field.show_fullpath is same as(true) ? true : false %}
+    {% set show_slug = field.show_slug is same as(true) ? true : false %}
+    {% set show_modular = field.show_modular is same as(true) ? true : false %}
+    {% set limit_levels = field.limit_levels ?: false %}
+
+    {% set page_list = users.parentsRawRoutes(start_page, show_all, show_fullpath, show_slug, show_modular, limit_levels) %}
+
+    <div class="form-select-wrapper {{ field.size }}">
+        <select class="{{ field.classes }}" name="{{ (scope ~ field.name)|fieldName ~ (field.multiple ? '[]' : '') }}"
+                {% if field.autofocus in ['on', 'true', 1] %}autofocus="autofocus"{% endif %}
+                {% if field.novalidate in ['on', 'true', 1] %}novalidate="novalidate"{% endif %}
+                {% if field.validate.required in ['on', 'true', 1] %}required="required"{% endif %}
+                {% if field.multiple in ['on', 'true', 1] %}multiple="multiple"{% endif %}
+                {% if field.disabled or isDisabledToggleable %}disabled="disabled"{% endif %}
+                >
+        {% if field.show_root and (authorize('users.canPostToRoot') or authorize('admin.super')) %}
+            <option value="/">/ ({{ "PLUGIN_ADMIN.DEFAULT_OPTION_ROOT"|tu }})</option>
+        {% endif %}
+        {{ parent.page_options(_context, page_list) }}
+        </select>
+    </div>
+{% endblock %}
+
