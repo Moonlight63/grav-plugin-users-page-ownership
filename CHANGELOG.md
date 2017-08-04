@@ -1,5 +1,5 @@
-# v0.9.1
-## 08/01/17
+# v0.9.2
+## 08/03/17
 1. [](#bug-fix)
     * Changed parentfilter to use ownerUtils instead of users twig var.
 2. [](#improvment)
