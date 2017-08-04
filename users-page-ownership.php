@@ -64,7 +64,7 @@ class UsersPageOwnershipPlugin extends Plugin
         }
 		
 		$this->enable([
-			'onAdminMenu' => ['onAdminMenu', 0],
+			/*'onAdminMenu' => ['onAdminMenu', 0],*/
 			'onAdminRegisterPermissions' => ['onAdminRegisterPermissions', 1000],
 			'onAdminCreatePageFrontmatter' => ['onAdminCreatePageFrontmatter', 0],
 			'onDataTypeExcludeFromDataManagerPluginHook' => ['onDataTypeExcludeFromDataManagerPluginHook', 0],
@@ -76,10 +76,10 @@ class UsersPageOwnershipPlugin extends Plugin
 	/**
      * Add navigation item to the admin plugin
      */
-    public function onAdminMenu()
+    /*public function onAdminMenu()
     {
 		$this->onAdminRegisterPermissions();
-    }
+    }*/
 	
 	/**
      * Set Page Creator
@@ -222,18 +222,10 @@ class UsersPageOwnershipPlugin extends Plugin
 	public function initializeGlobal()
     {
 		$this->enable([
-			'onTwigExtensions' => ['onTwigExtensions', 0],
 			'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
 			'onTwigSiteVariables'   => ['onTwigSiteVariables', 0],
 			'onGetPageTemplates' => ['onGetPageTemplates', -1]
 		]);
-		
-	}
-	
-	/**
-     * Add Twig Functions
-     */	
-	public function onTwigExtensions(){
 		
 	}
 	
@@ -300,7 +292,6 @@ class TwigUsersOwnership{
         $grav = Grav::instance();
         $pages = $grav['pages'];
         $parents = $pages->getList($start_page, 0, true, $show_all, $show_fullpath, $show_slug, $show_modular, $limit_levels);
-        //$parents = $pages->getList(null, 0, true);
         
         foreach ( $parents as $key=>$pageRoute ) {
             $page = $pages->find($key);
@@ -308,10 +299,6 @@ class TwigUsersOwnership{
                 unset($parents[$key]);
             }
         }
-        
-        /*if ($grav['user']->authorize('users.canPostToRoot') || $grav['user']->authorize('admin.super')) {
-            $parents = array('/' => 'PLUGIN_ADMIN.DEFAULT_OPTION_ROOT') + $parents;
-        }*/
         
         return $parents;
     }

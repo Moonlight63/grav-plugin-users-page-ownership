@@ -25,7 +25,7 @@
     {% set show_modular = field.show_modular is same as(true) ? true : false %}
     {% set limit_levels = field.limit_levels ?: false %}
 
-    {% set page_list = users.parentsRawRoutes(start_page, show_all, show_fullpath, show_slug, show_modular, limit_levels) %}
+    {% set page_list = ownerUtils.parentsRawRoutes(start_page, show_all, show_fullpath, show_slug, show_modular, limit_levels) %}
 
     <div class="form-select-wrapper {{ field.size }}">
         <select class="{{ field.classes }}" name="{{ (scope ~ field.name)|fieldName ~ (field.multiple ? '[]' : '') }}"
