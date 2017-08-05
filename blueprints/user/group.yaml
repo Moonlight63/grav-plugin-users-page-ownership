@@ -1,0 +1,15 @@
+@extends:
+    type: group
+    context: blueprints://user
+form:
+    fields:
+        pageuse:
+            ordering@: access
+            type: select
+            multiple: true
+            size: large
+            label: Allowed Page Types
+            data-options@: '\Grav\Plugin\AdminPlugin::pagesTypes'
+            classes: fancy
+            validate:
+                type: array

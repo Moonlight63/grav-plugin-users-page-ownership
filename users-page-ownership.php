@@ -24,10 +24,9 @@ class UsersPageOwnershipPlugin extends Plugin
     protected $enable = false;
     protected $query;
     
-    public $features = [
-        'blueprints' => 1000,
-    ];
-    protected $version;
+    /*public $features = [
+        'blueprints' => 9999,
+    ];*/
 
     /**
      * @return array
@@ -40,6 +39,9 @@ class UsersPageOwnershipPlugin extends Plugin
     }
 	
 	public function onPluginsInitialized(){
+        
+        $this->grav['locator']->addPath('blueprints', '', __DIR__ . DS . 'blueprints');
+        
         if ($this->isAdmin()) {
             $this->initializeAdmin();
         } else {
@@ -52,34 +54,14 @@ class UsersPageOwnershipPlugin extends Plugin
      * Admin side initialization ---------------------------------------------------------
      */
     public function initializeAdmin()
-    {
-		
-		$uri = $this->grav['uri'];
-        
-        // Store this version and prefer newer method
-        if (method_exists($this, 'getBlueprint')) {
-            $this->version = $this->getBlueprint()->version;
-        } else {
-            $this->version = $this->grav['plugins']->get('admin')->blueprints()->version;
-        }
-		
+    {		
 		$this->enable([
-			/*'onAdminMenu' => ['onAdminMenu', 0],*/
 			'onAdminRegisterPermissions' => ['onAdminRegisterPermissions', 1000],
 			'onAdminCreatePageFrontmatter' => ['onAdminCreatePageFrontmatter', 0],
 			'onDataTypeExcludeFromDataManagerPluginHook' => ['onDataTypeExcludeFromDataManagerPluginHook', 0],
             'onAdminSave' => ['onAdminSave', 0]
 		]);
-		
     }
-	
-	/**
-     * Add navigation item to the admin plugin
-     */
-    /*public function onAdminMenu()
-    {
-		$this->onAdminRegisterPermissions();
-    }*/
 	
 	/**
      * Set Page Creator
@@ -96,7 +78,6 @@ class UsersPageOwnershipPlugin extends Plugin
     
     public function onAdminSave($event)
     {
-        
         $obj = $event['object'];
         
         if ($obj instanceof Page) {
@@ -104,7 +85,6 @@ class UsersPageOwnershipPlugin extends Plugin
         }
         
         $event['object'] = $obj;
-		
     }
 	
 	
@@ -150,7 +130,7 @@ class UsersPageOwnershipPlugin extends Plugin
         // performance check for route
         if (!($route && $route == $uri->path())) {
             return false;
-        }
+        }        
 		
 		// Explode query into multiple strings. Drop empty values
         $this->query = array_filter(array_filter(explode(',', $query), 'trim'), 'strlen');
@@ -161,8 +141,16 @@ class UsersPageOwnershipPlugin extends Plugin
         if(!$this->checkAuthorPage()){
             return;
         }
+        
+        $locator = Grav::instance()['locator'];
+        $username = trim($this->grav['uri']->param('query'));
+        $file_path = $locator->findResource('account://' . $username . YAML_EXT);
+        
+        if(!$file_path){
+            return;
+        }
 		
-		// create the search page
+		// create the page
 		$page = new Page;
 		$page->init(new \SplFileInfo(__DIR__ . '/pages/user.md'));
 
@@ -187,12 +175,21 @@ class UsersPageOwnershipPlugin extends Plugin
         }
         
         $collection = $event['collection'];
-        $params = $collection->params();
-        
-        $username = $this->grav['uri']->param('query');
+        $username = trim($this->grav['uri']->param('query'));
         
         foreach ($collection as $cpage) {
-            $username = trim($username);
+            
+            /*Integrity check*/
+            if(!$cpage){
+                dump("An error has occured. Please contact site admin. No collection page found.");
+                continue;
+            }
+            
+            if(!$cpage->header()){
+                dump("An error has occured. Please contact site admin. No page header found.");
+                $collection->remove($cpage);
+                continue;
+            }
             
             if(!property_exists($cpage->header(), 'creator')){
                 $collection->remove($cpage);
@@ -208,6 +205,7 @@ class UsersPageOwnershipPlugin extends Plugin
                 $collection->remove($cpage);
                 continue;
             }
+            
         }
         
         $event['collection'] = $collection;
@@ -224,7 +222,7 @@ class UsersPageOwnershipPlugin extends Plugin
 		$this->enable([
 			'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
 			'onTwigSiteVariables'   => ['onTwigSiteVariables', 0],
-			'onGetPageTemplates' => ['onGetPageTemplates', -1]
+			/*'onGetPageTemplates' => ['onGetPageTemplates', -1]*/
 		]);
 		
 	}
@@ -242,25 +240,23 @@ class UsersPageOwnershipPlugin extends Plugin
     }
 	public function onTwigSiteVariables()
     {
-        
         $twig = $this->grav['twig'];
 		$twig->twig_vars['ownerUtils'] = new TwigUsersOwnership();
         
         if ($this->query) {
             $twig->twig_vars['query'] = implode(', ', $this->query);
-        }
-            
+        }  
     }
 
     /**
 	 * Get Blueprints and templates for rendering pages
      */
-	public function onGetPageTemplates($event)
+	/*public function onGetPageTemplates($event)
 	{
 	  	$types = $event->types;
 	  	$locator = Grav::instance()['locator'];
 	  	$types->scanBlueprints($locator->findResource('plugin://' . $this->name . '/blueprints/pages'));
-	}
+	}*/
     
     
 }
@@ -281,9 +277,6 @@ class TwigUsersOwnership{
     
     /**
      * Get available parents routes
-     *
-     * @param bool $rawRoutes get the raw route or the normal route
-     *
      * @return array
      */
     
@@ -401,15 +394,5 @@ class TwigUsersOwnership{
 		
 		return $users;
 	}
-    
-    public static function getGroup($groupName){
-        $obj = Group::load($groupName);
-        return($obj);
-    }
-    
-    public static function getGroups(){
-        $groups = Grav::instance()['config']->get('groups');
-        return ($groups);
-    }
 	
 }

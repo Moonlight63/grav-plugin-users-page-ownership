@@ -1,5 +1,5 @@
 ---
-title: Users
+title: Author
 content:
     items: '@root.descendants'
     limit: '3'
