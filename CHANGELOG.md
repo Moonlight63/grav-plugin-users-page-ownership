@@ -1,3 +1,10 @@
+# v0.9.3
+## 08/05/17
+1. [](#bug-fix)
+    * Hopefully fixed a bug by adding an integrity check.
+2. [](#feature)
+    * Users and Groups can be limited to specific page types.
+
 # v0.9.2
 ## 08/03/17
 1. [](#bug-fix)

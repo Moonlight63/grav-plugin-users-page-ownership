@@ -1,6 +1,7 @@
 <?php
 namespace Grav\Plugin;
 
+use Grav\Common\Assets;
 use Grav\Common\Filesystem\Folder;
 use Grav\Common\GPM\GPM;
 use Grav\Common\Grav;
@@ -13,7 +14,6 @@ use Grav\Common\File\CompiledYamlFile;
 use Grav\Common\Plugin;
 use Grav\Common\Filesystem\RecursiveFolderFilterIterator;
 use Grav\Common\User\User;
-use Grav\Common\User\Group;
 use Grav\Common\Utils;
 use RocketTheme\Toolbox\File\File;
 use RocketTheme\Toolbox\Event\Event;
@@ -56,11 +56,38 @@ class UsersPageOwnershipPlugin extends Plugin
     public function initializeAdmin()
     {		
 		$this->enable([
+            'onAdminMenu' => ['onAdminMenu', 0],
 			'onAdminRegisterPermissions' => ['onAdminRegisterPermissions', 1000],
+            'onAssetsInitialized' => ['initializeAssets', 0],
 			'onAdminCreatePageFrontmatter' => ['onAdminCreatePageFrontmatter', 0],
 			'onDataTypeExcludeFromDataManagerPluginHook' => ['onDataTypeExcludeFromDataManagerPluginHook', 0],
-            'onAdminSave' => ['onAdminSave', 0]
+            'onAdminSave' => ['onAdminSave', 0],
 		]);
+    }
+    
+    /**		
+     * Add navigation item to the admin plugin		
+     */		
+    public function onAdminMenu()		
+    {		
+		$this->onAdminRegisterPermissions();		
+    }
+    
+    /**
+    * Initialiaze required assets
+    * Group Manager Fix
+    * @param \Grav\Common\Assets $assets
+    * @return void
+    */
+    public function initializeAssets() {
+        $page = $this->grav['uri']->paths();
+        if (count($page) == 3) {
+            $page = $page[1];
+            if($page === "group-manager" || $page === "user") {
+                //dump("YES");
+                $this->grav['assets']->addJs('plugin://users-page-ownership/js/grouppageusefixer.js');
+            }
+        }
     }
 	
 	/**
@@ -245,7 +272,24 @@ class UsersPageOwnershipPlugin extends Plugin
         
         if ($this->query) {
             $twig->twig_vars['query'] = implode(', ', $this->query);
-        }  
+        }
+        
+        /*Group Manager Fix*/
+        $page = $this->grav['uri']->paths();
+        if (count($page) == 3) {
+            $page = $page[1];
+            if($page === "group-manager") {
+                $twig->twig_vars['group']['pageusefake'] = $twig->twig_vars['group']['pageuse'];
+            }
+            if($page === "user") {
+                $route = 'users/' . $twig->twig_vars['admin']->route;
+                $twig->twig_vars['admin']->data($route)['pageusefake'] = $twig->twig_vars['admin']->data($route)['pageuse'];
+                if($twig->twig_vars['admin']->data($route)['pageuse'] === "nopagetypes" || !isset($twig->twig_vars['admin']->data($route)['pageuse'])){
+                    unset($twig->twig_vars['admin']->data($route)['pageusefake']);
+                }
+            }
+        }
+        
     }
 
     /**
@@ -264,6 +308,67 @@ class UsersPageOwnershipPlugin extends Plugin
 
 
 class TwigUsersOwnership{
+    
+    
+    public static function userPageTypes($user) {
+        $groups = $user->get('groups');
+        $pagesArray = [];
+        
+        if ($groups) {
+            foreach ((array)$groups as $group) {
+                $pageuse = Grav::instance()['config']->get("groups.{$group}.pageuse");
+                if (isset($pageuse)){
+                    foreach(explode(",", $pageuse) as $type){
+                        if ($type == "nopagetypes") {continue;}
+                        if (!in_array($type, $pagesArray)){
+                            $pagesArray[] = $type;
+                        }
+                    }
+                }
+            }
+        }
+        if ($user->get('pageuse')){
+            foreach(explode(",", $user->get('pageuse')) as $type){
+                if ($type == "nopagetypes") {continue;}
+                if (!in_array($type, $pagesArray)){
+                    $pagesArray[] = $type;
+                }
+            }
+        }
+        
+        return $pagesArray;
+    }
+    
+    
+    public static function pageTypes(){
+        
+        $grav = Grav::instance();
+        $types = Pages::types();
+        // First filter by configuration
+        $hideTypes = $grav['config']->get('plugins.admin.hide_page_types', []);
+        foreach ($hideTypes as $type) {
+            unset($types[$type]);
+        }
+        
+        if ( !$grav['user']->authorize('admin.super') ) {
+            $showTypes = self::userPageTypes($grav['user']);
+
+            if(!empty($showTypes)){
+                foreach($types as $key => $value){
+                    if(!in_array($key, $showTypes)){
+                        unset($types[$key]);
+                    }
+                }
+            }
+        }
+        
+        // Allow manipulating of the data by event
+        $e = new Event(['types' => &$types]);
+        Grav::instance()->fireEvent('onAdminPageTypes', $e);
+        return $types;
+        
+    }
+    
     
     /**
      * Get available parents raw routes.

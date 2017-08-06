@@ -1,5 +1,5 @@
 en:
-  PLUGIN_USERS:
+  PLUGIN_USERSOWNERSHIP:
     ADD_USER: Add a User
     USERS: Users
     USER: User
@@ -8,3 +8,4 @@ en:
     GROUPS: Groups
     GROUP: Group
     BACK_TO_GROUPS: Back to Groups
+    PAGES_ALLOWED: Allowed Page Types

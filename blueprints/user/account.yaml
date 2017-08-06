@@ -5,13 +5,19 @@ form:
     fields:
             security:
                 fields:
-                    pageuse:
+                    pageusefake:
                         ordering@: access
                         type: select
                         multiple: true
                         size: large
-                        label: Allowed Page Types
+                        label: PLUGIN_USERSOWNERSHIP.PAGES_ALLOWED
                         data-options@: '\Grav\Plugin\AdminPlugin::pagesTypes'
-                        classes: fancy
+                        classes: fancy fakepageuse
                         validate:
                             type: array
+
+                    pageuse:
+                        type: text
+                        size: large
+                        label: AllowedPageTypesReal
+                        classes: fancy realpageuse
