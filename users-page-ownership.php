@@ -401,11 +401,11 @@ class TwigUsersOwnership{
         return $parents;
     }
     
-    
-    public static function showPage($page)
+    public static function showPage($page, $overrideHide = false)
     {
         $grav = Grav::instance();
         $showPage = true;
+        $checkChildren = true;
 
         if ( !empty($page->header()->creator) ) {
             if ( $grav['user']->authorize('users.limitPagesToOwner') && $page->header()->creator != $grav['user']->username ) {
@@ -427,7 +427,38 @@ class TwigUsersOwnership{
             $showPage = true;
         }
         
-        if(!$showPage){
+        if ( !empty($page->header()->hideFromParentSelection) ){
+            if( $page->header()->hideFromParentSelection['self'] ){
+                $showPage = false;
+                $checkChildren = false;
+            }
+        }
+        
+        $ancestors = [];
+        $parent = $page->parent();
+        if (!empty($parent)) {
+            while (true) {
+                if($parent !== null && $parent->parent() !== null){
+                    $ancestors[] = $parent;
+                    $parent = $parent->parent();
+                } else {
+                    break;
+                }
+            }
+        }
+        
+        foreach($ancestors as $ancestor){
+            if ( !empty($ancestor->header()->hideFromParentSelection) ){
+                if( $ancestor->header()->hideFromParentSelection['children'] ){
+                    $showPage = false;
+                    $checkChildren = false;
+                    break;
+                }
+            }
+        }
+        
+        
+        if(!$showPage and $checkChildren){
             if(sizeof($page->children()) > 0){
                 foreach($page->children() as $child){
                     if(self::showPage($child)){

@@ -53,3 +53,15 @@ form:
                                     help: PLUGIN_ADMIN.GROUPS_HELP
                                     validate:
                                         type: commalist
+                                        
+                                header.hideFromParentSelection:
+                                    type: checkboxes
+                                    label: Hide from parent selection
+                                    toggleable: true
+                                    default:
+                                        self: false
+                                        children: false
+                                    options:
+                                        self: Hide Self
+                                        children: Hide Children
+                                    use: keys

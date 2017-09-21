@@ -1,3 +1,8 @@
+# v0.9.4
+## 08/05/17
+1. [](#feature)
+    * Can now hide pages and child pages/folders from the parent selection menu. (In my case, useful because my site has a section with hundreds of sub-folders for client data and media files, sevearly clutering this dropdown menu. This does not affect visability on the admin pages page (what?), so it is completly non-destructive.)
+
 # v0.9.3
 ## 08/05/17
 1. [](#bug-fix)
