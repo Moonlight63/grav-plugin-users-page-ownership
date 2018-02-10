@@ -1,0 +1,11 @@
+@extends:
+    type: admin/pages/move
+    context: blueprints://
+
+form:
+  validation: loose
+  fields:
+    route:
+      type: filteredparent
+      label: PLUGIN_ADMIN.PARENT
+      classes: fancy
