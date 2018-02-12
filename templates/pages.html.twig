@@ -76,6 +76,12 @@
                 {% set showPage = true %}
             {% endif %}
         {% endfor %}
+
+        {% for g in p.header.shareWith %}
+            {% if g == grav.user.username %}
+                {% set showPage = true %}
+            {% endif %}
+        {% endfor %}
         
         {% if not showPage and p.children().count > 0 %}
             {% if _self.checkChildren(p)|trim %}
@@ -115,17 +121,35 @@
             {% endif %}
         {% endif %}
 
-        {% for g in p.header.visibleToGroups %}
-            {% if g in grav.user.groups %}
-                {% set showPage = true %}
-            {% endif %}
-        {% endfor %}
+        {% if not showPage %}
+            {% for g in p.header.visibleToGroups %}
+                {% if g in grav.user.groups %}
+                    {% set showPage = true %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-        {% for g in p.header.editableToGroups %}
-            {% if g in grav.user.groups %}
+        {% if not showPage %}
+            {% for g in p.header.editableToGroups %}
+                {% if g in grav.user.groups %}
+                    {% set showPage = true %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if not showPage %}
+            {% for g in p.header.shareWith %}
+                {% if g == grav.user.username %}
+                    {% set showPage = true %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if not showPage %}
+            {% if _self.checkChildren(p)|trim %}
                 {% set showPage = true %}
             {% endif %}
-        {% endfor %}
+        {% endif %}
 
     {% endif %}
     
@@ -153,11 +177,21 @@
             {% endif %}
         {% endif %}
 
-        {% for g in p.header.editableToGroups %}
-            {% if g in grav.user.groups %}
-                {% set editPage = true %}
-            {% endif %}
-        {% endfor %}
+        {% if not editPage %}
+            {% for g in p.header.editableToGroups %}
+                {% if g in grav.user.groups %}
+                    {% set editPage = true %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if not editPage %}
+            {% for g in p.header.shareWith %}
+                {% if g == grav.user.username %}
+                    {% set editPage = true %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
     {% endif %}
     

@@ -23,6 +23,12 @@ form:
                                             help: PLUGIN_ADMIN.PAGE_FILE_HELP
                                             default: default
                                             data-options@: '\Grav\Plugin\TwigUsersOwnership::pageTypes'
+                                column2:
+                                    fields:
+                                        order:
+                                            type: filteredOrder
+                                            label: PLUGIN_ADMIN.SORTABLE_PAGES
+                                            sitemap:
                       
                         admin_only:
                             fields:
@@ -33,24 +39,38 @@ form:
                                     readonly: true
                                     
                                 header.visibleToGroups:
-                                    type: selectize
+                                    type: select
+                                    multiple: true
                                     size: large
                                     toggleable: true
                                     label: Force Visible to Groups
-                                    data-options@: '\Grav\User\Groups::groups'
+                                    data-options@: '\Grav\Common\User\Group::groupNames'
                                     classes: fancy
                                     help: PLUGIN_ADMIN.GROUPS_HELP
                                     validate:
                                         type: commalist
                                         
                                 header.editableToGroups:
-                                    type: selectize
+                                    type: select
+                                    multiple: true
                                     size: large
                                     toggleable: true
                                     label: Force Editable to Groups
-                                    data-options@: '\Grav\User\Groups::groups'
+                                    data-options@: '\Grav\Common\User\Group::groupNames'
                                     classes: fancy
                                     help: PLUGIN_ADMIN.GROUPS_HELP
+                                    validate:
+                                        type: commalist
+
+                                header.shareWith:
+                                    type: select
+                                    multiple: true
+                                    size: large
+                                    toggleable: true
+                                    label: Share Page With
+                                    data-options@: '\Grav\Plugin\TwigUsersOwnership::userNames'
+                                    classes: fancy
+                                    help: Allow these users view, access, modify, and save changes to this page.
                                     validate:
                                         type: commalist
                                         

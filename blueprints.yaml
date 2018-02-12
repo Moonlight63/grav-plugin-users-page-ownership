@@ -1,5 +1,5 @@
 name: Users Page Ownership
-version: 0.9.4
+version: 0.9.5
 description: Adds user ownership functionality to your pages
 icon: user
 author:
@@ -11,4 +11,4 @@ keywords: admin, users, managment, plugin
 bug: https://github.com/Moonlight63/grav-plugin-advanced-admin-users-managment/issues
 license: MIT
 dependencies:
-  - { name: grav, version: '>=1.3.0' }
+  - { name: grav, version: '>=1.3.7' }

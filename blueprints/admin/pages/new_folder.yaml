@@ -1,0 +1,11 @@
+@extends:
+  type: admin/pages/new_folder
+  context: blueprints://
+
+form:
+  route:
+    type: filteredparent
+    label: PLUGIN_ADMIN.PARENT_PAGE
+    classes: fancy
+    validate:
+      required: true

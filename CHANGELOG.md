@@ -1,3 +1,12 @@
+# v0.9.5
+## 02/11/18
+1. [](#feature)
+    * Added a collaboration feature. Pages can now be shared with a specific user, and that user will be able to see that page in the pages view, and will be able to modify it's contents. Possibly useful for co-authoring or just as a debugging feature.
+2. [](#bug-fix)
+    * Fixed non authorized users from being able to access pages through the "page ordering." I still recommend modifying the page blueprints of page types that should not be reordered to not include the ordering section at all. Any user can still re-order pages or enable/disable numeric folder ordering for a page that they own or have control over.
+    * Removes being able to move a page to be the child of a page you do not control. -Thanks noxify!
+        
+
 # v0.9.4
 ## 08/05/17
 1. [](#feature)

@@ -138,11 +138,11 @@ class UsersPageOwnershipPlugin extends Plugin
 	public function initializeClient()
     {
 		$this->enable([
-			'onPagesInitialized' => ['constuctUsersPage', 0],
+			'onPagesInitialized' => ['constructUsersPage', 0],
             'onCollectionProcessed' => ['onCollectionProcessed', 10],
 		]);
 	}
-    
+
     private function checkAuthorPage(){
         /** @var Uri $uri */
         $uri = $this->grav['uri'];
@@ -157,14 +157,14 @@ class UsersPageOwnershipPlugin extends Plugin
         // performance check for route
         if (!($route && $route == $uri->path())) {
             return false;
-        }        
-		
+        }
+
 		// Explode query into multiple strings. Drop empty values
         $this->query = array_filter(array_filter(explode(',', $query), 'trim'), 'strlen');
         return true;
     }
-	
-	public function constuctUsersPage(){
+
+	public function constructUsersPage(){
         if(!$this->checkAuthorPage()){
             return;
         }
@@ -422,6 +422,12 @@ class TwigUsersOwnership{
                 $showPage = true;
             }
         }
+
+        if ( !empty($page->header()->shareWith) ) {
+            if ( in_array($grav['user']->username, $page->header()->shareWith) ) {
+                $showPage = true;
+            }
+        }
         
         if ( $grav['user']->authorize('admin.super') ) {
             $showPage = true;
@@ -517,7 +523,7 @@ class TwigUsersOwnership{
 		return $this->load($username);
 	}
 	
-	public function getAll(){
+	public static function getAll(){
 		$account_dir = Grav::instance()['locator']->findResource('account://');
         $files       = array_diff(scandir($account_dir), ['.', '..']);
 		$users		 = [];
@@ -530,5 +536,16 @@ class TwigUsersOwnership{
 		
 		return $users;
 	}
+
+    public static function userNames() {
+        $users = self::getAll();
+
+        $userNames = [];
+        foreach ($users as $u) {
+            $userNames[$u['username']] = $u['username'];
+        }
+
+        return $userNames;
+    }
 	
 }
