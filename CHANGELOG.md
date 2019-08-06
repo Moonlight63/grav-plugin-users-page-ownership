@@ -1,3 +1,9 @@
+# v0.9.6
+## 08/06/19
+1. [](#bug-fix)
+    * Fixed issue with page type filtering breaking modular pages; this now works for both modular and non-modular pages.
+
+
 # v0.9.5
 ## 02/11/18
 1. [](#feature)

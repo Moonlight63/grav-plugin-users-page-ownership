@@ -343,7 +343,7 @@ class TwigUsersOwnership{
     public static function pageTypes(){
         
         $grav = Grav::instance();
-        $types = Pages::types();
+        $types = Pages::pageTypes();
         // First filter by configuration
         $hideTypes = $grav['config']->get('plugins.admin.hide_page_types', []);
         foreach ($hideTypes as $type) {
